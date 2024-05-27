@@ -767,7 +767,7 @@
 	clock-frequency = <400000>;
 	status = "okay";
 	rtc: rtc@32 {
-		compatible = "ti,am62-rtc";
+		compatible = "epson,rx8025t";
 		reg = <0x32>;
 		status = "okay";
     };
