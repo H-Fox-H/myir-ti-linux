@@ -27,3 +27,7 @@
 &main_rti3{
 	status = "disabled";
 };
+
+&spi1{
+	status = "okay";
+};
