@@ -974,7 +974,7 @@
 		spi-max-frequency = <10000000>;
         	reg = <0>;
         	page-size = <2048>;
-            	block-size = <128 * 1024>;
+            	block-size = <131072>;
             	oob-size = <64>;
             	
             	partitions {
