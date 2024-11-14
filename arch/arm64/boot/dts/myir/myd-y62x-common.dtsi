@@ -20,7 +20,7 @@
 		mmc0 = &sdhci0;
 		mmc1 = &sdhci1;
 		mmc2 = &sdhci2;
-		spi1 = &spi1;
+		main_spi1 = &main_spi1;
 		ethernet0 = &cpsw_port1;
 		ethernet1 = &cpsw_port2;
 		usb0 = &usb0;
@@ -463,7 +463,7 @@
 		>;
 	};
 
-	spi1_pins_default: spi1_pins-default {
+	main_spi1_pins_default: main-spi1-pins-default {
 		pinctrl-single,pins = <
 			AM62X_IOPAD(0x020, PIN_OUTPUT, 1)          /* (J25) OSPI0_D5.spi1_clk */
 			AM62X_IOPAD(0x024, PIN_OUTPUT, 1)          /* (H25) OSPI0_D6.spi1_d0 */
@@ -964,10 +964,10 @@
 	};
 };
 
-&spi1 {
+&main_spi1 {
 	status = "okay";
 	pinctrl-names = "default";
-	pinctrl-0 = <&spi1_pins_default>;
+	pinctrl-0 = <&main_spi1_pins_default>;
 	
 	nand@0 {
 		compatible = "foresee_240926,F35UQA002G";

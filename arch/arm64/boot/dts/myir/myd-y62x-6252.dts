@@ -28,6 +28,6 @@
 	status = "disabled";
 };
 
-&spi1{
+&main_spi1{
 	status = "okay";
 };
