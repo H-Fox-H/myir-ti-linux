@@ -969,21 +969,29 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&main_spi1_pins_default>;
 	
-	nand@0 {
-		compatible = "foresee_240926,F35UQA002G";
-		spi-max-frequency = <10000000>;
+	nand_flash: nand@0 {
+		compatible = "spi-nand";
+		spi-max-frequency = <24000000>;
         	reg = <0>;
         	page-size = <2048>;
             	block-size = <131072>;
             	oob-size = <64>;
             	
-            	partitions {
-            		compatible = "mtd-partition";
-            		partition@0 {
-                	label = "ubifs";
-                	reg = <0x00000000 0x20000000>;
-		    	};
-		};
+            	mtd {
+		       compatible = "nand-flash";
+		       #address-cells = <1>;
+		       #size-cells = <1>;
+
+		       partition@0 {
+		           label = "bootloader";
+		           reg = <0x00000000 0x00040000>;
+		       };
+
+		       partition@1 {
+		           label = "firmware";
+		           reg = <0x00040000 0x000C0000>;
+               };
+           };
 	};
 };
 
