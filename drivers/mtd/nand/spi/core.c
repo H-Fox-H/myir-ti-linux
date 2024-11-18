@@ -957,6 +957,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
 	&toshiba_spinand_manufacturer,
 	&winbond_spinand_manufacturer,
 	&xtx_spinand_manufacturer,
+	&foresee_spinand_manufacturer,
 };
 
 static const struct spinand_ctrl_ops spinand_default_ctrl_ops =

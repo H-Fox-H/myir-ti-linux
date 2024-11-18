@@ -979,7 +979,7 @@
 	clocks = <&k3_clks 142 0>;
 	
 	nand_flash: nand@0 {
-		compatible = "foresee_240926,F35UQA002G";
+		compatible = "foresee,F35UQA002G";
 		spi-max-frequency = <24000000>;
         	reg = <0>;
         	page-size = <2048>;
