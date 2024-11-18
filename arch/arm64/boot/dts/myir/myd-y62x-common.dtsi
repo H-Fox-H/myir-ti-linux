@@ -965,10 +965,11 @@
 };
 
 
-&main_spi1: spi@20110000 {
+&main_spi1 {
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&main_spi1_pins_default>;
+	
 	compatible = "ti,am654-mcspi","ti,omap4-mcspi";
 	reg = <0x00 0x20110000 0x00 0x400>;
 	interrupts = <GIC_SPI 173 IRQ_TYPE_LEVEL_HIGH>;
