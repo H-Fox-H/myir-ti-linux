@@ -9,6 +9,7 @@
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/net/ti-dp83867.h>
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/spi/spi.h>
 #include "k3-am625.dtsi"
 
 / {
@@ -964,13 +965,21 @@
 	};
 };
 
-&main_spi1 {
+
+&main_spi1: spi@20110000 {
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&main_spi1_pins_default>;
+	compatible = "ti,am654-mcspi","ti,omap4-mcspi";
+	reg = <0x00 0x20110000 0x00 0x400>;
+	interrupts = <GIC_SPI 173 IRQ_TYPE_LEVEL_HIGH>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+	power-domains = <&k3_pds 142 TI_SCI_PD_EXCLUSIVE>;
+	clocks = <&k3_clks 142 0>;
 	
 	nand_flash: nand@0 {
-		compatible = "spi-nand";
+		compatible = "foresee_240926,F35UQA002G";
 		spi-max-frequency = <24000000>;
         	reg = <0>;
         	page-size = <2048>;
