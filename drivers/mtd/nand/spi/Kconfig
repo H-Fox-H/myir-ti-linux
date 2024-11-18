@@ -7,3 +7,8 @@ menuconfig MTD_SPI_NAND
 	select SPI_MEM
 	help
 	  This is the framework for the SPI NAND device drivers.
+config MTD_SPI_NAND_FORESEE
+    bool "Foresee SPI NAND support"
+    depends on MTD_SPI_NAND
+    help
+      Support for Foresee SPI NAND devices.
