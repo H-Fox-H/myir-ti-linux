@@ -1,0 +1,5 @@
+config MTD_SPI_NAND_FORESEE
+    bool "Foresee SPI NAND support"
+    depends on MTD_SPI_NAND
+    help
+      Support for Foresee SPI NAND devices.
