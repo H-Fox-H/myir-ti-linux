@@ -1,7 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-only
 
-source "drivers/mtd/nand/spi/my_nand/Kconfig"
-
 menuconfig MTD_SPI_NAND
 	tristate "SPI NAND device Support"
 	select MTD_NAND_CORE
@@ -10,3 +8,9 @@ menuconfig MTD_SPI_NAND
 	select SPI_MEM
 	help
 	  This is the framework for the SPI NAND device drivers.
+	  
+if MTD_SPI_NAND
+
+source "drivers/mtd/nand/spi/my_nand/Kconfig"
+
+endif #MTD_SPI_NAND

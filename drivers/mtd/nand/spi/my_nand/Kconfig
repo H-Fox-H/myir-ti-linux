@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-2.0-only
 config MTD_SPI_NAND_FORESEE
     bool "Foresee SPI NAND support"
     depends on MTD_SPI_NAND
