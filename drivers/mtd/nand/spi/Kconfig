@@ -8,9 +8,3 @@ menuconfig MTD_SPI_NAND
 	select SPI_MEM
 	help
 	  This is the framework for the SPI NAND device drivers.
-	  
-if MTD_SPI_NAND
-
-source "drivers/mtd/nand/spi/my_nand/Kconfig"
-
-endif #MTD_SPI_NAND
