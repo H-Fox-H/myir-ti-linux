@@ -22,16 +22,16 @@ static SPINAND_OP_VARIANTS(write_cache_variants,
 		SPINAND_PROG_LOAD(true, 0, NULL, 0));
 
 static SPINAND_OP_VARIANTS(update_cache_variants,
-		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-		SPINAND_PROG_LOAD(true, 0, NULL, 0));
+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
 
-static int f35uqa002g_ooblayout_ecc(struct mtd_info *mtd, int section,
+static int f35sqa002g_ooblayout_ecc(struct mtd_info *mtd, int section,
 				    struct mtd_oob_region *region)
 {
 	return -ERANGE;
 }
 
-static int f35uqa002g_ooblayout_free(struct mtd_info *mtd, int section,
+static int f35sqa002g_ooblayout_free(struct mtd_info *mtd, int section,
 				     struct mtd_oob_region *region)
 {
 	if (section)
@@ -44,12 +44,12 @@ static int f35uqa002g_ooblayout_free(struct mtd_info *mtd, int section,
 	return 0;
 }
 
-static const struct mtd_ooblayout_ops f35uqa002g_ooblayout = {
-	.ecc = f35uqa002g_ooblayout_ecc,
-	.free = f35uqa002g_ooblayout_free,
+static const struct mtd_ooblayout_ops f35sqa002g_ooblayout = {
+	.ecc = f35sqa002g_ooblayout_ecc,
+	.free = f35sqa002g_ooblayout_free,
 };
 
-static int f35uqa002g_ecc_get_status(struct spinand_device *spinand, u8 status)
+static int f35sqa002g_ecc_get_status(struct spinand_device *spinand, u8 status)
 {
 	struct nand_device *nand = spinand_to_nand(spinand);
 
@@ -71,7 +71,7 @@ static int f35uqa002g_ecc_get_status(struct spinand_device *spinand, u8 status)
 }
 
 static const struct spinand_info foresee_spinand_table[] = {
-	SPINAND_INFO("F35UQA002G",
+	SPINAND_INFO("F35SQA002G",
 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x72, 0x72),
 		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
 		     NAND_ECCREQ(1, 512),
@@ -79,8 +79,8 @@ static const struct spinand_info foresee_spinand_table[] = {
 					      &write_cache_variants,
 					      &update_cache_variants),
 		     SPINAND_HAS_QE_BIT,
-		     SPINAND_ECCINFO(&f35uqa002g_ooblayout,
-				     f35uqa002g_ecc_get_status)),
+		     SPINAND_ECCINFO(&f35sqa002g_ooblayout,
+				     f35sqa002g_ecc_get_status)),
 };
 
 static const struct spinand_manufacturer_ops foresee_spinand_manuf_ops = {

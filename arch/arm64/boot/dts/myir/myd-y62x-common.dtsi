@@ -20,7 +20,7 @@
 		mmc0 = &sdhci0;
 		mmc1 = &sdhci1;
 		mmc2 = &sdhci2;
-		main_spi1 = &main_spi1;
+		spi0 = &ospi0;
 		ethernet0 = &cpsw_port1;
 		ethernet1 = &cpsw_port2;
 		usb0 = &usb0;
@@ -463,12 +463,43 @@
 		>;
 	};
 
+	ospi0_pins_default: ospi0-pins-default {
+		pinctrl-single,pins = <
+			AM62X_IOPAD(0x0000, PIN_OUTPUT, 0) /* (H24) OSPI0_CLK */
+			AM62X_IOPAD(0x002c, PIN_OUTPUT, 0) /* (F23) OSPI0_CSn0 */
+			AM62X_IOPAD(0x000c, PIN_INPUT, 0) /* (E25) OSPI0_D0 */
+			AM62X_IOPAD(0x0010, PIN_INPUT, 0) /* (G24) OSPI0_D1 */
+			AM62X_IOPAD(0x0014, PIN_INPUT, 0) /* (F25) OSPI0_D2 */
+			AM62X_IOPAD(0x0018, PIN_INPUT, 0) /* (F24) OSPI0_D3 */
+		>;
+	};
+
 	main_spi1_pins_default: main-spi1-pins-default {
 		pinctrl-single,pins = <
-			AM62X_IOPAD(0x020, PIN_OUTPUT, 1)          /* (J25) OSPI0_D5.spi1_clk */
-			AM62X_IOPAD(0x024, PIN_OUTPUT, 1)          /* (H25) OSPI0_D6.spi1_d0 */
-			AM62X_IOPAD(0x028, PIN_INPUT, 1)          /* (J22) OSPI0_D7.spi1_d1 */
-			AM62X_IOPAD(0x01c, PIN_OUTPUT, 1)          /* (J23) OSPI0_D4.spi1_cs0 */
+			AM62X_IOPAD(0x0020, PIN_INPUT, 1) /* (J25) OSPI0_D5.SPI1_CLK */
+			AM62X_IOPAD(0x001c, PIN_INPUT, 1) /* (J23) OSPI0_D4.SPI1_CS0 */
+			AM62X_IOPAD(0x0024, PIN_INPUT, 1) /* (H25) OSPI0_D6.SPI1_D0 */
+			AM62X_IOPAD(0x0028, PIN_INPUT, 1) /* (J22) OSPI0_D7.SPI1_D1 */
+		>;
+	};
+	
+	ospi0_pins_default: ospi0-pins-default {
+		pinctrl-single,pins = <
+			AM62X_IOPAD(0x0000, PIN_OUTPUT, 0) /* (C6) OSPI0_CLK */
+			AM62X_IOPAD(0x002c, PIN_OUTPUT, 0) /* (A3) OSPI0_CSn0 */
+			AM62X_IOPAD(0x000c, PIN_INPUT, 0) /* (C4) OSPI0_D0 */
+			AM62X_IOPAD(0x0010, PIN_INPUT, 0) /* (D4) OSPI0_D1 */
+			AM62X_IOPAD(0x0014, PIN_INPUT, 0) /* (B5) OSPI0_D2 */
+			AM62X_IOPAD(0x0018, PIN_INPUT, 0) /* (A5) OSPI0_D3 */
+		>;
+	};
+
+	main_spi1_pins_default: main-spi1-pins-default {
+		pinctrl-single,pins = <
+			AM62X_IOPAD(0x20c, PIN_INPUT, 5) /* (G17) MMC0_DAT2.SPI1_CLK */
+			AM62X_IOPAD(0x208, PIN_INPUT, 5) /* (H17) MMC0_DAT3.SPI1_CS0 */
+			AM62X_IOPAD(0x1f8, PIN_INPUT, 5) /* (J16) MMC0_DAT7.SPI1_D0 */
+			AM62X_IOPAD(0x1fc, PIN_INPUT, 5) /* (K17) MMC0_DAT6.SPI1_D1 */
 		>;
 	};
 
@@ -961,46 +992,6 @@
 	mbox_r5_0: mbox-r5-0 {
 		ti,mbox-rx = <2 0 0>;
 		ti,mbox-tx = <3 0 0>;
-	};
-};
-
-
-&main_spi1 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&main_spi1_pins_default>;
-	
-	compatible = "ti,am654-mcspi","ti,omap4-mcspi";
-	reg = <0x00 0x20110000 0x00 0x400>;
-	interrupts = <GIC_SPI 173 IRQ_TYPE_LEVEL_HIGH>;
-	#address-cells = <1>;
-	#size-cells = <0>;
-	power-domains = <&k3_pds 142 TI_SCI_PD_EXCLUSIVE>;
-	clocks = <&k3_clks 142 0>;
-	
-	nand_flash: nand@0 {
-		compatible = "foresee,F35UQA002G";
-		spi-max-frequency = <24000000>;
-        	reg = <0>;
-        	page-size = <2048>;
-            	block-size = <131072>;
-            	oob-size = <64>;
-            	
-            	mtd {
-		       compatible = "nand-flash";
-		       #address-cells = <1>;
-		       #size-cells = <1>;
-
-		       partition@0 {
-		           label = "bootloader";
-		           reg = <0x00000000 0x00040000>;
-		       };
-
-		       partition@1 {
-		           label = "firmware";
-		           reg = <0x00040000 0x000C0000>;
-               };
-           };
 	};
 };
 
