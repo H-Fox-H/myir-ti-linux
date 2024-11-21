@@ -34,7 +34,7 @@
 	pinctrl-0 = <&ospi0_pins_default>;
 
 	flash@0 {
-		compatible = "foresee,F35SQA002G";
+		compatible = "spi-nand";
 		reg = <0x0>;
 		spi-tx-bus-width = <4>;
 		spi-rx-bus-width = <4>;
