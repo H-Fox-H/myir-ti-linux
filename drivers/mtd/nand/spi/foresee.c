@@ -51,7 +51,7 @@ static int fsxxndxxg_ooblayout_free(struct mtd_info *mtd, int section,
 
 static const struct mtd_ooblayout_ops fsxxndxxg_ooblayout = {
 	.ecc = fsxxndxxg_ooblayout_ecc,
-	.rfree = fsxxndxxg_ooblayout_free,
+	.free = fsxxndxxg_ooblayout_free,
 };
 
 static int fsxxndxxg_ecc_get_status(struct spinand_device *spinand, u8 status)
