@@ -11,6 +11,10 @@
 
 #define SPINAND_MFR_FORESEE		0xCD
 #define STATUS_ECC_MASK		GENMASK(5, 4)
+#define FORESEE_STATUS_ECC_NO_BITFLIPS	    (0 << 4)
+#define FORESEE_STATUS_ECC_1_BITFLIPS	    (1 << 4)
+#define FORESEE_ECC_UNCOR_ERROR10           (2 << 4)
+#define FORESEE_ECC_UNCOR_ERROR11           (3 << 4)
 
 static SPINAND_OP_VARIANTS(read_cache_variants,
 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
@@ -23,8 +27,8 @@ static SPINAND_OP_VARIANTS(write_cache_variants,
 		SPINAND_PROG_LOAD(true, 0, NULL, 0));
 
 static SPINAND_OP_VARIANTS(update_cache_variants,
-		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-		SPINAND_PROG_LOAD(true, 0, NULL, 0));
+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
 
 static int fsxxndxxg_ooblayout_ecc(struct mtd_info *mtd, int section,
 				   struct mtd_oob_region *region)
@@ -52,23 +56,21 @@ static const struct mtd_ooblayout_ops fsxxndxxg_ooblayout = {
 
 static int fsxxndxxg_ecc_get_status(struct spinand_device *spinand, u8 status)
 {
-	struct nand_device *nand = spinand_to_nand(spinand);
-
 	switch (status & STATUS_ECC_MASK) {
-	case STATUS_ECC_NO_BITFLIPS:
+	case FORESEE_STATUS_ECC_NO_BITFLIPS:
 		return 0;
 
-	case STATUS_ECC_HAS_BITFLIPS:
-		return nanddev_get_ecc_conf(nand)->strength;
+	case FORESEE_STATUS_ECC_1_BITFLIPS:
+		return 1;
 
+	case FORESEE_ECC_UNCOR_ERROR10:
+	case FORESEE_ECC_UNCOR_ERROR11:	
+		return -EBADMSG;
+	
 	default:
 		break;
 	}
-
-	/* More than 1-bit error was detected in one or more sectors and
-	 * cannot be corrected.
-	 */
-	return -EBADMSG;
+	return -EINVAL;
 }
 
 static const struct spinand_info foresee_spinand_table[] = {
