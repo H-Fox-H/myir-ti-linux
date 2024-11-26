@@ -466,8 +466,27 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	else
 		wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;
 
+	u8 foresee_id[3]={0xCD,0x62,0x62};
+	printf("spinand_id:0x%x 0x%x 0x%x\r\n",spinand->id.data[0],spinand->id.data[1],spinand->id.data[2]);
+	if(!memcmp(spinand->id.data,foresee_id,3)) {
+		wdesc->info.op_tmpl.cmd.opcode = 0x32;
+	}
+	else {
+		foresee_id[0] = 0;
+	}
+	
 	while (nbytes) {
 		ret = spi_mem_dirmap_write(wdesc, column, nbytes, buf);
+		
+		if(foresee_id[0]) {
+			foresee_id[0] = 0;
+			if (req->mode == MTD_OPS_RAW)
+				wdesc = spinand->dirmaps[req->pos.plane].wdesc;
+			else
+				wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;	
+		}
+		
+			
 		if (ret < 0)
 			return ret;
 
