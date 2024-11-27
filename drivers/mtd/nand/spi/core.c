@@ -432,6 +432,7 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	unsigned int nbytes, column = 0;
 	void *buf = spinand->databuf;
 	ssize_t ret;
+	struct device *dev = &spinand->spimem->spi->dev;
 	u8 foresee_id[2]={0xCD,0x62};
 	u16 foresee_opcode = 0;
 
@@ -468,8 +469,8 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	else
 		wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;
 
-	printf("spinand_id:0x%x 0x%x 0x%x\r\n",spinand->id.data[0],spinand->id.data[1],spinand->id.data[2]);
-	printf("wdesc_opcode:0x%x ,spinand_opcode:0x%x\r\n",wdesc->info.op_tmpl.cmd.opcode,spinand->data_ops.update_cache.cmd.opcode);
+	dev_dbg(dev,"spinand_id:0x%x 0x%x 0x%x\r\n",spinand->id.data[0],spinand->id.data[1],spinand->id.data[2]);
+	dev_dbg(dev,"wdesc_opcode:0x%x ,spinand_opcode:0x%x\r\n",wdesc->info.op_tmpl.cmd.opcode,spinand->data_ops.update_cache->cmd.opcode);
 	if (memcmp(spinand->id.data,foresee_id,2) == 0) {
 		foresee_opcode = wdesc->info.op_tmpl.cmd.opcode;
 		if (foresee_opcode == 0x34)
@@ -479,7 +480,7 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	}
 	
 	while (nbytes) {
-		printf("wdesc_opcode:0x%x ,spinand_opcode:0x%x\r\n",wdesc->info.op_tmpl.cmd.opcode,spinand->data_ops.update_cache.cmd.opcode);
+		dev_dbg(dev,"wdesc_opcode:0x%x ,spinand_opcode:0x%x\r\n",wdesc->info.op_tmpl.cmd.opcode,spinand->data_ops.update_cache->cmd.opcode);
 		ret = spi_mem_dirmap_write(wdesc, column, nbytes, buf);
 		
 		if (foresee_opcode) {
