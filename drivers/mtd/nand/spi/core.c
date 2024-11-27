@@ -470,7 +470,10 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	
 	//printf("spinand_id:0x%x 0x%x 0x%x\r\n",spinand->id.data[0],spinand->id.data[1],spinand->id.data[2]);
 	if(memcmp(spinand->id.data,foresee_id,2) == 0) {
-		wdesc->info.op_tmpl.cmd.opcode = 0x32;
+		if(wdesc->info.op_tmpl.cmd.opcode == 0x34)
+			wdesc->info.op_tmpl.cmd.opcode = 0x32;
+		else if(wdesc->info.op_tmpl.cmd.opcode == 0x84)
+			wdesc->info.op_tmpl.cmd.opcode = 0x02;
 	}
 	else {
 		foresee_id[0] = 0;
