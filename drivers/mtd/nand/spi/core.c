@@ -432,6 +432,7 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	unsigned int nbytes, column = 0;
 	void *buf = spinand->databuf;
 	ssize_t ret;
+	u8 foresee_id[2]={0xCD,0x62};
 
 	/*
 	 * Looks like PROGRAM LOAD (AKA write cache) does not necessarily reset
@@ -466,9 +467,9 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	else
 		wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;
 
-	u8 foresee_id[3]={0xCD,0x62,0x62};
-	printf("spinand_id:0x%x 0x%x 0x%x\r\n",spinand->id.data[0],spinand->id.data[1],spinand->id.data[2]);
-	if(!memcmp(spinand->id.data,foresee_id,3)) {
+	
+	//printf("spinand_id:0x%x 0x%x 0x%x\r\n",spinand->id.data[0],spinand->id.data[1],spinand->id.data[2]);
+	if(!memcmp(spinand->id.data,foresee_id,2)) {
 		wdesc->info.op_tmpl.cmd.opcode = 0x32;
 	}
 	else {
