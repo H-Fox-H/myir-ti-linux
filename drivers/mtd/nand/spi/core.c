@@ -433,6 +433,7 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	void *buf = spinand->databuf;
 	ssize_t ret;
 	u8 foresee_id[2]={0xCD,0x62};
+	u8 foresee_opcode = 0;
 
 	/*
 	 * Looks like PROGRAM LOAD (AKA write cache) does not necessarily reset
@@ -467,27 +468,21 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	else
 		wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;
 
-	
 	//printf("spinand_id:0x%x 0x%x 0x%x\r\n",spinand->id.data[0],spinand->id.data[1],spinand->id.data[2]);
-	if(memcmp(spinand->id.data,foresee_id,2) == 0) {
-		if(wdesc->info.op_tmpl.cmd.opcode == 0x34)
+	if (memcmp(spinand->id.data,foresee_id,2) == 0) {
+		foresee_opcode = wdesc->info.op_tmpl.cmd.opcode;
+		if (foresee_opcode == 0x34)
 			wdesc->info.op_tmpl.cmd.opcode = 0x32;
-		else if(wdesc->info.op_tmpl.cmd.opcode == 0x84)
+		else if (foresee_opcode == 0x84)
 			wdesc->info.op_tmpl.cmd.opcode = 0x02;
-	}
-	else {
-		foresee_id[0] = 0;
 	}
 	
 	while (nbytes) {
 		ret = spi_mem_dirmap_write(wdesc, column, nbytes, buf);
 		
-		if(foresee_id[0]) {
-			foresee_id[0] = 0;
-			if (req->mode == MTD_OPS_RAW)
-				wdesc = spinand->dirmaps[req->pos.plane].wdesc;
-			else
-				wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;	
+		if (foresee_opcode) {
+			wdesc->info.op_tmpl.cmd.opcode = foresee_opcode;
+			foresee_opcode = 0;
 		}
 		
 		if (ret < 0)
