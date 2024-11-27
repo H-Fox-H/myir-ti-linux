@@ -469,7 +469,7 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 
 	
 	//printf("spinand_id:0x%x 0x%x 0x%x\r\n",spinand->id.data[0],spinand->id.data[1],spinand->id.data[2]);
-	if(!memcmp(spinand->id.data,foresee_id,2)) {
+	if(memcmp(spinand->id.data,foresee_id,2) == 0) {
 		wdesc->info.op_tmpl.cmd.opcode = 0x32;
 	}
 	else {
@@ -487,7 +487,6 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 				wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;	
 		}
 		
-			
 		if (ret < 0)
 			return ret;
 
