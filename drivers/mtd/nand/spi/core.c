@@ -478,6 +478,7 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 		else if (foresee_opcode == 0x84)
 			wdesc->info.op_tmpl.cmd.opcode = 0x02;
 	}
+	wdesc->nodirmap = 1;
 	
 	while (nbytes) {
 		dev_dbg(dev,"wdesc_opcode:0x%x ,spinand_opcode:0x%x\r\n",wdesc->info.op_tmpl.cmd.opcode,spinand->data_ops.update_cache->cmd.opcode);
