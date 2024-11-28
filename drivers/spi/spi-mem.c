@@ -521,10 +521,12 @@ static ssize_t spi_mem_no_dirmap_write(struct spi_mem_dirmap_desc *desc,
 	op.data.nbytes = len;
 	ret = spi_mem_adjust_op_size(desc->mem, &op);
 	if (ret)
+		pr_info("adjust_op_size ret:%d\r\n",ret);
 		return ret;
 
 	ret = spi_mem_exec_op(desc->mem, &op);
 	if (ret)
+		pr_info("exec_op ret:%d\r\n",ret);
 		return ret;
 
 	return op.data.nbytes;
@@ -748,13 +750,14 @@ ssize_t spi_mem_dirmap_write(struct spi_mem_dirmap_desc *desc,
 
 	if (desc->nodirmap) {
 		ret = spi_mem_no_dirmap_write(desc, offs, len, buf);
+		pr_info("no_dirmap ret:%d\r\n",ret);
 	} else if (ctlr->mem_ops && ctlr->mem_ops->dirmap_write) {
 		ret = spi_mem_access_start(desc->mem);
 		if (ret)
 			return ret;
 
 		ret = ctlr->mem_ops->dirmap_write(desc, offs, len, buf);
-
+		pr_info("dirmap ret:%d\r\n",ret);
 		spi_mem_access_end(desc->mem);
 	} else {
 		ret = -ENOTSUPP;
