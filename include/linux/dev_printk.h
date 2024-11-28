@@ -7,6 +7,8 @@
  * Copyright (c) 2008-2009 Novell Inc.
  *
  */
+ 
+ #define DEBUG		/* Enable initcall_debug */
 
 #ifndef _DEVICE_PRINTK_H_
 #define _DEVICE_PRINTK_H_
