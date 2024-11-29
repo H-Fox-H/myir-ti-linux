@@ -469,18 +469,6 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 		wdesc = spinand->dirmaps[req->pos.plane].wdesc;
 	else
 		wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;
-
-	pr_info("spinand_id:0x%x 0x%x 0x%x\r\n",spinand->id.data[0],spinand->id.data[1],spinand->id.data[2]);
-	pr_info("wdesc_opcode:0x%x ,spinand_opcode:0x%x\r\n",wdesc->info.op_tmpl.cmd.opcode,spinand->data_ops.update_cache->cmd.opcode);
-	/*if (memcmp(spinand->id.data,foresee_id,2) == 0) {
-		foresee_opcode = wdesc->info.op_tmpl.cmd.opcode;
-		if (foresee_opcode == 0x34)
-			wdesc->info.op_tmpl.cmd.opcode = 0x32;
-		else if (foresee_opcode == 0x84)
-			wdesc->info.op_tmpl.cmd.opcode = 0x02;
-	}
-	wdesc->nodirmap = 1;
-	*/
 	
 	my_wdesc = *wdesc;
 	if (memcmp(spinand->id.data,foresee_id,2) == 0) {
@@ -488,15 +476,18 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 			my_wdesc.info.op_tmpl.cmd.opcode = 0x32;
 		else if (my_wdesc.info.op_tmpl.cmd.opcode == 0x84)
 			my_wdesc.info.op_tmpl.cmd.opcode = 0x02;
+		/*
 		ret = spi_mem_dirmap_write(&my_wdesc, column, 1, buf);
 		if (ret < 0)
 			pr_info("error sending foresee cmd\r\n");
+		*/
 	}
+	pr_info("desc->nodirmap:%d\r\n",wdesc->nodirmap);
 	
 	while (nbytes) {
-		pr_info("wdesc_opcode:0x%x ,spinand_opcode:0x%x\r\n",wdesc->info.op_tmpl.cmd.opcode,spinand->data_ops.update_cache->cmd.opcode);
+		//pr_info("nbytes:%d\r\n",wdesc->info.op_tmpl.cmd.opcode,spinand->data_ops.update_cache->cmd.opcode);
 		ret = spi_mem_dirmap_write(wdesc, column, nbytes, buf);
-		pr_info("ret:%d\r\n",ret);
+		//pr_info("ret:%d\r\n",ret);
 		
 		/*if (foresee_opcode) {
 			wdesc->info.op_tmpl.cmd.opcode = foresee_opcode;
