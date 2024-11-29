@@ -484,11 +484,11 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	
 	my_wdesc = *wdesc;
 	if (memcmp(spinand->id.data,foresee_id,2) == 0) {
-		if (my_wdesc.info.op_tmpl.cmd == 0x34)
-			my_wdesc.info.op_tmpl.cmd = 0x32;
-		else if (my_wdesc.info.op_tmpl.cmd == 0x84)
-			my_wdesc.info.op_tmpl.cmd = 0x02;
-		ret = spi_mem_dirmap_write(my_wdesc, column, 1, buf);
+		if (my_wdesc.info.op_tmpl.cmd.opcode == 0x34)
+			my_wdesc.info.op_tmpl.cmd.opcode = 0x32;
+		else if (my_wdesc.info.op_tmpl.cmd.opcode == 0x84)
+			my_wdesc.info.op_tmpl.cmd.opcode = 0x02;
+		ret = spi_mem_dirmap_write(&my_wdesc, column, 1, buf);
 		if (ret < 0)
 			pr_info("error sending foresee cmd\r\n");
 	}
