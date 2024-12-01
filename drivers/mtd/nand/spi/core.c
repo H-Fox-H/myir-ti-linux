@@ -473,7 +473,7 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	if (memcmp(spinand->id.data,foresee_id,2) == 0) {
 		my_wdesc = *wdesc;
 		pr_info("desc->nodirmap:%d\r\n",wdesc->nodirmap);
-		if (wesc->nodirmap) {
+		if (wdesc->nodirmap) {
 			foresee_flag = 1;
 			my_wdesc.info.op_tmpl = wdesc->info.op_tmpl;
 			wdesc->info.op_tmpl = *spinand->data_ops.write_cache;
