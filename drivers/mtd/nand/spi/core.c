@@ -432,10 +432,9 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	unsigned int nbytes, column = 0;
 	void *buf = spinand->databuf;
 	ssize_t ret;
-	struct device *dev = &spinand->spimem->spi->dev;
 	struct spi_mem_dirmap_desc my_wdesc;
 	u8 foresee_id[2]={0xCD,0x62};
-	u16 foresee_opcode = 0;
+	u16 foresee_flag = 0;
 
 	/*
 	 * Looks like PROGRAM LOAD (AKA write cache) does not necessarily reset
@@ -470,29 +469,26 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	else
 		wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;
 	
-	my_wdesc = *wdesc;
+	
 	if (memcmp(spinand->id.data,foresee_id,2) == 0) {
-		if (my_wdesc.info.op_tmpl.cmd.opcode == 0x34)
-			my_wdesc.info.op_tmpl.cmd.opcode = 0x32;
-		else if (my_wdesc.info.op_tmpl.cmd.opcode == 0x84)
-			my_wdesc.info.op_tmpl.cmd.opcode = 0x02;
-		/*
-		ret = spi_mem_dirmap_write(&my_wdesc, column, 1, buf);
-		if (ret < 0)
-			pr_info("error sending foresee cmd\r\n");
-		*/
+		my_wdesc = *wdesc;
+		pr_info("desc->nodirmap:%d\r\n",wdesc->nodirmap);
+		if (desc->nodirmap) {
+			foresee_flag = 1;
+			my_wdesc.info.op_tmpl = wdesc->info.op_tmpl;
+			wdesc->info.op_tmpl = *spinand->data_ops.write_cache;
+		}
+		else {
+			my_wdesc.info.op_tmpl = *spinand->data_ops.write_cache;
+			ret = spi_mem_dirmap_write(&my_wdesc, column, 1, buf);
+			if (ret < 0)
+				pr_info("error sending foresee cmd\r\n");
+		}
 	}
-	pr_info("desc->nodirmap:%d\r\n",wdesc->nodirmap);
 	
 	while (nbytes) {
-		//pr_info("nbytes:%d\r\n",wdesc->info.op_tmpl.cmd.opcode,spinand->data_ops.update_cache->cmd.opcode);
-		ret = spi_mem_dirmap_write(wdesc, column, nbytes, buf);
-		//pr_info("ret:%d\r\n",ret);
 		
-		/*if (foresee_opcode) {
-			wdesc->info.op_tmpl.cmd.opcode = foresee_opcode;
-			foresee_opcode = 0;
-		}*/
+		ret = spi_mem_dirmap_write(wdesc, column, nbytes, buf);
 		
 		if (ret < 0)
 			return ret;
@@ -503,6 +499,13 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 		nbytes -= ret;
 		column += ret;
 		buf += ret;
+		
+		if ((memcmp(spinand->id.data,foresee_id,2) == 0) && foresee_flag == 1) {
+			foresee_flag = 0;
+			if (nbytes) {
+				wdesc->info.op_tmpl = my_wdesc.info.op_tmpl;
+			}
+		}
 	}
 
 	return 0;
