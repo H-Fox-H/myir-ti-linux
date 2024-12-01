@@ -487,7 +487,7 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	}
 	
 	while (nbytes) {
-		pr_info("nbytes:%d\r\n",nbytes);
+		pr_info("while nbytes:%d\r\n",nbytes);
 		ret = spi_mem_dirmap_write(wdesc, column, nbytes, buf);
 		pr_info("ret:%d\r\n",ret);
 		if (ret < 0)
