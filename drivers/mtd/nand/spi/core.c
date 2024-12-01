@@ -473,6 +473,11 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	if (memcmp(spinand->id.data,foresee_id,2) == 0) {
 		my_wdesc = *wdesc;
 		pr_info("desc->nodirmap:%d\r\n",wdesc->nodirmap);
+		my_wdesc.info.op_tmpl.cmd.op_code = 0x02;
+		ret = spi_mem_dirmap_write(&my_wdesc, column, 1, buf);
+		pr_info("ret:%d\r\n",ret);
+		if (ret < 0)
+			pr_info("error sending foresee cmd\r\n");
 		/*if (wdesc->nodirmap) {
 			foresee_flag = 1;
 			my_wdesc.info.op_tmpl = wdesc->info.op_tmpl;
