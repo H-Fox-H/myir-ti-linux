@@ -467,8 +467,9 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	else
 		wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;
 	
-	
+	pr_info("spinand_id:0x%x 0x%x 0x%x\r\n",spinand->id.data[0],spinand->id.data[1],spinand->id.data[2]);
 	if (memcmp(spinand->id.data,foresee_id,2) == 0) {
+		pr_info("foresee id pass\r\n");
 		wdesc->info.op_tmpl = *spinand->data_ops.write_cache;
 		
 		ret = spi_mem_dirmap_write(wdesc, column, 1, buf);
