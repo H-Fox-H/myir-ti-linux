@@ -432,9 +432,8 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	unsigned int nbytes, column = 0;
 	void *buf = spinand->databuf;
 	ssize_t ret;
-	struct spi_mem_dirmap_desc my_wdesc;
+	//struct spi_mem_dirmap_desc my_wdesc;
 	u8 foresee_id[2]={0xCD,0x62};
-	u16 foresee_flag = 0;
 
 	/*
 	 * Looks like PROGRAM LOAD (AKA write cache) does not necessarily reset
@@ -471,33 +470,30 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 	
 	
 	if (memcmp(spinand->id.data,foresee_id,2) == 0) {
-		//Thougth the nodirmap is true, it still works in the dma mode.  
+		//pr_info("desc->nodirmap:%d\r\n",wdesc->nodirmap);
+		wdesc->info.op_tmpl = *spinand->data_ops.write_cache;
 		
-		my_wdesc = *wdesc;
-		pr_info("desc->nodirmap:%d\r\n",wdesc->nodirmap);
-		my_wdesc.info.op_tmpl.cmd.opcode = 0x02;
-		ret = spi_mem_dirmap_write(&my_wdesc, column, 1, buf);
+		ret = spi_mem_dirmap_write(wdesc, column, 1, buf);
+		
+		if (ret < 0)
+			pr_info("foresee cmd error\r\n");
+			
+		wdesc->info.op_tmpl = *spinand->data_ops.update_cache;
+		/*
+		if (wdesc->info.op_tmpl.cmd.opcode == 0x34)
+			wdesc->info.op_tmpl.cmd.opcode = 0x32;
+		else if (wdesc->info.op_tmpl.cmd.opcode == 0x84)
+			wdesc->info.op_tmpl.cmd.opcode = 0x02;
+		ret = spi_mem_dirmap_write(wdesc, column, 1, buf);
 		if (ret < 0)
 			pr_info("error sending foresee cmd\r\n");
-			
-		//not use
-		/*if (wdesc->nodirmap) {
-			foresee_flag = 1;
-			my_wdesc.info.op_tmpl = wdesc->info.op_tmpl;
-			wdesc->info.op_tmpl = *spinand->data_ops.write_cache;
-		}
-		else {
-			my_wdesc.info.op_tmpl = *spinand->data_ops.write_cache;
-			ret = spi_mem_dirmap_write(&my_wdesc, column, 1, buf);
-			if (ret < 0)
-				pr_info("error sending foresee cmd\r\n");
-		}*/
+		wdesc->info.op_tmpl.cmd.opcode = 
+		*/
 	}
 	
 	while (nbytes) {
-		pr_info("while nbytes:%d\r\n",nbytes);
 		ret = spi_mem_dirmap_write(wdesc, column, nbytes, buf);
-		pr_info("ret:%d\r\n",ret);
+		
 		if (ret < 0)
 			return ret;
 
