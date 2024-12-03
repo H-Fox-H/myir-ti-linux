@@ -467,7 +467,8 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 		wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;
 	
 	pr_info("spinand_id:0x%x 0x%x 0x%x\r\n",spinand->id.data[0],spinand->id.data[1],spinand->id.data[2]);
-	if (spinand->id.data[0] == SPINAND_MFR_FORESEE) {
+	//match the foresee ids
+	if (spinand->id.data[0] == 0xCD) {
 		pr_info("foresee id pass\r\n");
 		wdesc->info.op_tmpl = *spinand->data_ops.write_cache;
 		
